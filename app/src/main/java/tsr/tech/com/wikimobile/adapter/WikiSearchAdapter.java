@@ -37,11 +37,18 @@ public class WikiSearchAdapter extends ArrayAdapter<Result> {
         View search_row = inflater.inflate(R.layout.search_row, parent, false);
         TextView sgst_title = search_row.findViewById(R.id.suggestion_title);
         ImageView sgst_img = search_row.findViewById(R.id.suggestion_image);
-
+        TextView sgst_desc = search_row.findViewById(R.id.desc_text);
         Result sgst_result =  results_data.get(position);
         String sgst_url = sgst_result.getThumbnail();
         sgst_title.setText(sgst_result.getTitle());
-
+        String desc = sgst_result.getDesc();
+        if (desc==null) desc = "";
+        else{
+           if(desc.compareToIgnoreCase("")!=0 && desc.length()>2){
+               desc = desc.substring(2,desc.length()-2);
+           }
+        }
+        sgst_desc.setText(desc);
         if(sgst_url == null || sgst_url.compareToIgnoreCase("")==0 ){
             sgst_img.setImageResource(R.drawable.load_err);
             sgst_img.setPadding(2,2,2,2);

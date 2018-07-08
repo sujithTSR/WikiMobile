@@ -5,7 +5,6 @@
     <color name="colorAccent">#FF4081</color>
     <color name="main_background">#F5F6F7</color>
     <color name="list_text">#2A2A2A</color>
-    <color name="city_text">#556799</color>
+    <color name="desc_text">#556799</color>
     <color name="error_background">#E85959</color>
-    <color name="btn_color">#4A4A4A</color>
 </resources>
