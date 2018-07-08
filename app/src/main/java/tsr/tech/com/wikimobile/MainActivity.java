@@ -6,14 +6,25 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.View;
+import android.webkit.WebView;
+import android.widget.AdapterView;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
+
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyLog;
+import com.android.volley.error.VolleyError;
+import com.android.volley.request.JsonObjectRequest;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -23,15 +34,18 @@ import java.util.ArrayList;
 
 import tsr.tech.com.wikimobile.adapter.WikiSearchAdapter;
 import tsr.tech.com.wikimobile.models.Result;
+import tsr.tech.com.wikimobile.remote.MyApplication;
 import tsr.tech.com.wikimobile.remote.SuggestionsService;
 
 public class MainActivity extends AppCompatActivity {
 
     public static final String SUGGESTIONS = "FetchSuggestions";
+    private static final String TAG = "MainActivity" ;
     private ArrayList<Result> mNewData, mOldData;
     ListView sgst_list;
     EditText editText;
     WikiSearchAdapter searchAdapter;
+    LinearLayout search_view;
 
 
     @Override
@@ -40,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         editText = findViewById(R.id.edit_text);
         registerMyReceiver();
-        mNewData = new ArrayList<>();
+        search_view = findViewById(R.id.search_layout);
         mNewData = new ArrayList<>();
         mOldData = new ArrayList<>();
         sgst_list = findViewById(R.id.sgst_list);
@@ -69,6 +83,25 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        sgst_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                Result result = getItem(position);
+                if(result!=null){
+                    fetchFull_URL(result.getPageId());
+                }
+            }
+        });
+    }
+
+
+    private Result getItem(int position) {
+        if(mNewData.size()>=position){
+           return mNewData.get(position);
+        }
+        else{
+            return null;
+        }
     }
 
     private void startServiceForSuggestion(String search_tag) {
@@ -156,4 +189,28 @@ public class MainActivity extends AppCompatActivity {
         return mOldData;
     }
 
+    private void fetchFull_URL(final String pageId) {
+        String url = getString(R.string.page_url) + "&prop=info&inprop=url&format=json&pageids=" + pageId;
+        Log.v(TAG, url);
+        JsonObjectRequest jsonObjectRequest2 = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                try {
+                    String page_url = response.getJSONObject("query").getJSONObject("pages").getJSONObject(pageId).getString("fullurl");
+                    Intent browser_intent = new Intent(MainActivity.this, WebPage.class);
+                    browser_intent.putExtra("page_url",page_url);
+                    startActivity(browser_intent);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(MainActivity.this, "Unable to Find Page", Toast.LENGTH_SHORT).show();
+            }
+        });
+        MyApplication.getInstance().addToRequestQueue(jsonObjectRequest2);
+
+    }
 }

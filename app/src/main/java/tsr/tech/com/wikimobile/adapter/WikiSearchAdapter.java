@@ -58,5 +58,4 @@ public class WikiSearchAdapter extends ArrayAdapter<Result> {
         }
         return search_row;
     }
-
 }
