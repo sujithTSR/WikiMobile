@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:orientation="horizontal"
+    android:padding="5dp"
+    android:layout_height="wrap_content">
+
+    <FrameLayout
+        android:layout_width="50dp"
+        android:layout_gravity="center"
+        android:layout_height="50dp">
+
+        <ImageView
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:id="@+id/suggestion_image"
+            />
+    </FrameLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:gravity="center"
+        >
+        <TextView
+            android:gravity="center|start"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:id="@+id/suggestion_title"
+            android:text="Albert Einstien"
+            android:textSize="20dp"
+            android:layout_marginLeft="10dp"
+            android:fontFamily="serif"
+            />
+
+    </LinearLayout>
+
+</LinearLayout>

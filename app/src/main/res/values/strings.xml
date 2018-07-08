@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">WikiMobile</string>
+    <string name="base_url">https://en.wikipedia.org/w/api.php?action=query</string>
 </resources>
